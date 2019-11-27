@@ -1,0 +1,34 @@
+{
+  "author": "Alex Eales <alexeales@hotmail.co.uk>",
+  "name": "wasm-colour-ga",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html",
+    "deploy": "npm run build && firebase deploy --only hosting"
+  },
+  "bin": {
+    "create-rust-parcel": ".bin/create-rust-parcel.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexEales/wasm-colour-ga.git"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexEales/wasm-colour-ga/issues"
+  },
+  "homepage": "https://github.com/AlexEales/wasm-colour-ga#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-wasm.rs": "^1.2.15",
+    "sass": "^1.23.7",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "tailwindcss": "^1.1.4"
+  }
+}
