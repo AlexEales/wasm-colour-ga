@@ -1,3 +1,3 @@
-import module from '../colour-ga/Cargo.toml';
+import module from '../colour_ga/Cargo.toml';
 
 console.log(module.hello());

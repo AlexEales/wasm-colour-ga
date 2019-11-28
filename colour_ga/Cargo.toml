@@ -1,5 +1,5 @@
 [package]
-name = "colour-ga"
+name = "colour_ga"
 version = "0.1.0"
 authors = ["Alex Eales <alexeales@hotmail.co.uk>"]
 edition = "2018"

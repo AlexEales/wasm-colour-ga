@@ -3,5 +3,5 @@ dist
 .cache
 *.log
 *.cache
-crate/pkg
-crate/target
+colour_ga/pkg
+colour_ga/target
