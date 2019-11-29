@@ -69,6 +69,32 @@ section {
     }
 }
 
+.btn {
+    &-red {
+        @apply bg-red-500 border-red-700;
+
+        &:hover {
+            @apply bg-red-400 border-red-500;
+        }
+    }
+
+    &-green {
+        @apply bg-green-500 border-green-700;
+
+        &:hover {
+            @apply bg-green-400 border-green-500;
+        }
+    }
+
+    &-blue {
+        @apply bg-blue-500 border-blue-700;
+
+        &:hover {
+            @apply bg-blue-400 border-blue-500;
+        }
+    }
+}
+
 [generation-display-card] {
     @apply inline-flex items-center w-full my-2 p-4 bg-white rounded-lg overflow-hidden border border-gray-300;
 }

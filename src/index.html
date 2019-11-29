@@ -14,6 +14,7 @@
         <h1 class="title">WASM Colour GA</h1>
 
         <section class="section">
+            <!-- SIMULATION SETTINGS -->
             <div id="simulation-settings">
                 <h2>Simulation Settings</h2>
                 <hr>
@@ -37,18 +38,19 @@
                 <input id="mutation-rate-input" type="number" value="0.2" min="0" max="1" step="0.05" />
 
                 <div class="flex justify-between">
-                    <button id="run-button" class="bg-green-500 hover:bg-green-400 border-green-700 hover:broder-green-500">
+                    <button id="run-button" type="submit" class="btn-green">
                         Run
                     </button>
-                    <button id="stop-button" class="bg-red-500 hover:bg-red-400 border-red-700 hover:broder-red-500">
+                    <button id="stop-button" class="btn-red">
                         Stop
                     </button>
-                    <button id="reset-button" class="bg-blue-500 hover:bg-blue-400 border-blue-700 hover:broder-blue-500">
+                    <button id="reset-button" class="btn-blue">
                         Reset
                     </button>
                 </div>
             </div>
 
+            <!-- GENERATION DISPLAY -->
             <div id="generation-display">
                 <h2>Generation History</h2>
                 <hr>
