@@ -29,9 +29,9 @@ pub struct GASimulation {
     target_colour: String,
     population_size: usize,
     mutation_rate: f32,
-    _population_history: Vec<Vec<String>>,
     _population: Vec<String>,
     _generation_number: usize,
+    _generation_history: Vec<Vec<String>>,
 }
 
 #[wasm_bindgen]
@@ -46,15 +46,17 @@ impl GASimulation {
             target_colour,
             population_size,
             mutation_rate,
-            _population_history: Vec::new(),
             _population,
             _generation_number: 0,
+            _generation_history: Vec::new(),
         }
     }
 
     pub fn simulate_generation(&mut self, fitness_func: &js_sys::Function) -> Result<SimulationResult, JsValue> {
         // Order the population
         utils::order_population(&mut self._population, fitness_func, &self.target_colour);
+        // Append population to generation history
+        self._generation_history.push(self._population.clone());
         // Increment generation number
         self._generation_number += 1;
         // Create simulation result
@@ -79,6 +81,6 @@ impl GASimulation {
         if generation > self._population.len() {
             return Err(JsValue::from("Invalid generation number!"));
         }
-        Ok(self._population_history[generation].iter().map(JsValue::from).collect())
+        Ok(self._generation_history[generation].iter().map(JsValue::from).collect())
     }
 }
