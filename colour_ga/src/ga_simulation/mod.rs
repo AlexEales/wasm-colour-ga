@@ -8,9 +8,18 @@ pub struct SimulationResult {
     value: String
 }
 
+#[wasm_bindgen]
 impl SimulationResult {
     pub fn new(score: f64, value: String) -> Self {
         SimulationResult { score, value }
+    }
+
+    pub fn get_score(&self) -> f64 {
+        self.score
+    }
+
+    pub fn get_value(&self) -> String {
+        String::from(&self.value)
     }
 }
 
@@ -39,7 +48,7 @@ impl GASimulation {
     }
 
     pub fn simulate_generation(&mut self, fitness_func: &js_sys::Function) -> Result<SimulationResult, JsValue> {
-        Ok(SimulationResult::new(0.0, "".to_owned()))
+        Ok(SimulationResult::new(0.0, "ffffff".to_owned()))
     }
 
     pub fn get_generation_population(&self, generation: usize) -> Result<Vec<JsValue>, JsValue> {

@@ -53,3 +53,9 @@ RESET_BUTTON.addEventListener('click', () => {
 });
 
 console.log(module.hello());
+
+let simulation = new module.GASimulation('ffffff', 100, 0.2);
+console.log(simulation);
+let result = simulation.simulate_generation()
+console.log(result.get_value());
+console.log(result.get_score());
