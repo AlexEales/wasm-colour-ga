@@ -4,14 +4,15 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 pub struct SimulationResult {
+    generation_number: usize,
     score: f64,
     value: String
 }
 
 #[wasm_bindgen]
 impl SimulationResult {
-    pub fn new(score: f64, value: String) -> Self {
-        SimulationResult { score, value }
+    pub fn new(generation_number: usize, score: f64, value: String) -> Self {
+        SimulationResult { generation_number, score, value }
     }
 
     pub fn get_score(&self) -> f64 {
@@ -29,7 +30,8 @@ pub struct GASimulation {
     population_size: usize,
     mutation_rate: f32,
     _population_history: Vec<Vec<String>>,
-    _population: Vec<String>
+    _population: Vec<String>,
+    _generation_number: usize,
 }
 
 #[wasm_bindgen]
@@ -45,14 +47,32 @@ impl GASimulation {
             population_size,
             mutation_rate,
             _population_history: Vec::new(),
-            _population
+            _population,
+            _generation_number: 0,
         }
     }
 
     pub fn simulate_generation(&mut self, fitness_func: &js_sys::Function) -> Result<SimulationResult, JsValue> {
         // Order the population
         utils::order_population(&mut self._population, fitness_func, &self.target_colour);
-        Ok(SimulationResult::new(0.0, "ffffff".to_owned()))
+        // Increment generation number
+        self._generation_number += 1;
+        // Create simulation result
+        let this = JsValue::NULL;
+        let target = JsValue::from(&self.target_colour);
+        let top_organism = JsValue::from(&self._population[0]);
+        let top_organism_score = fitness_func.call2(&this, &top_organism, &target)?.as_f64().unwrap();
+        let result = SimulationResult::new(
+            self._generation_number,
+            top_organism_score,
+            String::from(&self._population[0])
+        );
+        // Cull bottom 50% of population
+
+        // Crossover and mutation
+
+        // Return simulation result
+        Ok(result)
     }
 
     pub fn get_generation_population(&self, generation: usize) -> Result<Vec<JsValue>, JsValue> {
