@@ -29,21 +29,23 @@ pub struct GASimulation {
     population_size: usize,
     mutation_rate: f32,
     _population_history: Vec<Vec<String>>,
-    _population: Vec<String>,
-    _running: bool,
+    _population: Vec<String>
 }
 
 #[wasm_bindgen]
 impl GASimulation {
     #[wasm_bindgen(constructor)]
     pub fn new(target_colour: String, population_size: usize, mutation_rate: f32) -> Self {
+        // Initialise population
+        let _population: Vec<String> = (0..population_size).map(|_| {
+            utils::random_hexcode()
+        }).collect();
         GASimulation {
             target_colour,
             population_size,
             mutation_rate,
             _population_history: Vec::new(),
-            _population: Vec::with_capacity(population_size),
-            _running: false
+            _population
         }
     }
 
