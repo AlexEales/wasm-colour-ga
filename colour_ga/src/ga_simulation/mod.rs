@@ -48,6 +48,8 @@ impl GASimulation {
     }
 
     pub fn simulate_generation(&mut self, fitness_func: &js_sys::Function) -> Result<SimulationResult, JsValue> {
+        // Order the population
+        utils::order_population(&mut self._population, fitness_func, &self.target_colour);
         Ok(SimulationResult::new(0.0, "ffffff".to_owned()))
     }
 

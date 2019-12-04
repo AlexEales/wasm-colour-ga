@@ -1,5 +1,17 @@
+use wasm_bindgen::prelude::*;
 use rand::prelude::*;
 use std::{char, u8, f64};
+
+pub fn order_population(population: &mut Vec<String>, fitness_func: &js_sys::Function, target: &String) {
+    let this = JsValue::NULL;
+    population.sort_by(|a, b| {
+        let a_score = fitness_func.call2(&this, &JsValue::from(a), &JsValue::from(target)).unwrap();
+        let a_score = a_score.as_string().unwrap();
+        let b_score = fitness_func.call2(&this, &JsValue::from(b), &JsValue::from(target)).unwrap();
+        let b_score = b_score.as_string().unwrap();
+        a_score.partial_cmp(&b_score).unwrap()
+    });
+}
 
 pub fn random_hexcode() -> String {
     // Generate 6 random numbers between 0-15 and convert them to base 16
