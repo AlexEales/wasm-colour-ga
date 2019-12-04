@@ -1,6 +1,7 @@
 pub mod utils;
 
 use wasm_bindgen::prelude::*;
+use rand::prelude::*;
 
 #[wasm_bindgen]
 pub struct SimulationResult {
@@ -21,6 +22,10 @@ impl SimulationResult {
 
     pub fn get_value(&self) -> String {
         String::from(&self.value)
+    }
+
+    pub fn get_generation_number(&self) -> usize {
+        self.generation_number
     }
 }
 
@@ -52,6 +57,7 @@ impl GASimulation {
         }
     }
 
+    // FIXME: Currently causing a panic when run in the JS
     pub fn simulate_generation(&mut self, fitness_func: &js_sys::Function) -> Result<SimulationResult, JsValue> {
         // Order the population
         utils::order_population(&mut self._population, fitness_func, &self.target_colour);
@@ -70,9 +76,29 @@ impl GASimulation {
             String::from(&self._population[0])
         );
         // Cull bottom 50% of population
-
-        // Crossover and mutation
-
+        self._population = self._population[0..self.population_size / 2].to_vec();
+        // For new population
+        let mut new_population: Vec<String> = Vec::with_capacity(self.population_size / 2);
+        let mut random = rand::thread_rng();
+        // Crossover and mutation to fill 45%
+        let crossover_count = (self.population_size as f32 * 0.45) as usize;
+        for _ in 0..crossover_count {
+            let org_1 = &self._population[random.gen_range(0, crossover_count)];
+            let org_2 = &self._population[random.gen_range(0, crossover_count)];
+            let mut new_org = utils::crossover(org_1, org_2);
+            // Mutate
+            if rand::thread_rng().gen::<f32>() <= self.mutation_rate {
+                new_org = utils::mutate(&new_org);
+            }
+            new_population.push(new_org);
+        }
+        // Fill remaining 5% with random organisms
+        let remaining_count = (self.population_size as f32 * 0.05) as usize;
+        for _ in 0..remaining_count {
+            new_population.push(utils::random_hexcode());
+        }
+        // Append new population
+        self._population.append(&mut new_population);
         // Return simulation result
         Ok(result)
     }
