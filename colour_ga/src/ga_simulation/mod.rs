@@ -58,18 +58,15 @@ impl GASimulation {
     }
 
     // FIXME: Currently causing a panic when run in the JS
-    pub fn simulate_generation(&mut self, fitness_func: &js_sys::Function) -> Result<SimulationResult, JsValue> {
+    pub fn simulate_generation(&mut self) -> Result<SimulationResult, JsValue> {
         // Order the population
-        utils::order_population(&mut self._population, fitness_func, &self.target_colour);
+        utils::order_population(&mut self._population, &utils::colour_dist_fitness_func, &self.target_colour);
         // Append population to generation history
         self._generation_history.push(self._population.clone());
         // Increment generation number
         self._generation_number += 1;
         // Create simulation result
-        let this = JsValue::NULL;
-        let target = JsValue::from(&self.target_colour);
-        let top_organism = JsValue::from(&self._population[0]);
-        let top_organism_score = fitness_func.call2(&this, &top_organism, &target)?.as_f64().unwrap();
+        let top_organism_score = utils::colour_dist_fitness_func(&self._population[0], &self.target_colour);
         let result = SimulationResult::new(
             self._generation_number,
             top_organism_score,
