@@ -3,6 +3,8 @@ pub mod utils;
 use wasm_bindgen::prelude::*;
 use rand::prelude::*;
 
+// TODO: COMMENT THIS WHOLE DAMN THING
+
 #[wasm_bindgen]
 pub struct SimulationResult {
     generation_number: usize,
@@ -57,7 +59,6 @@ impl GASimulation {
         }
     }
 
-    // FIXME: Currently causing a panic when run in the JS
     pub fn simulate_generation(&mut self) -> Result<SimulationResult, JsValue> {
         // Order the population
         utils::order_population(&mut self._population, &utils::colour_dist_fitness_func, &self.target_colour);
@@ -100,10 +101,10 @@ impl GASimulation {
         Ok(result)
     }
 
-    pub fn get_generation_population(&self, generation: usize) -> Result<Vec<JsValue>, JsValue> {
+    pub fn get_population_snapshot(&self, generation: usize, sample_size: usize) -> Result<Vec<JsValue>, JsValue> {
         if generation > self._population.len() {
             return Err(JsValue::from("Invalid generation number!"));
         }
-        Ok(self._generation_history[generation].iter().map(JsValue::from).collect())
+        Ok(self._generation_history[generation][..sample_size].iter().map(JsValue::from).collect())
     }
 }
