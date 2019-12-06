@@ -23,6 +23,7 @@ const STOP_BUTTON = document.querySelector('#stop-button');
 const RESET_BUTTON = document.querySelector('#reset-button');
 
 const GENERATION_DISPLAY = document.querySelector('#generation-display');
+const GENERATION_DISPLAY_RESET_BUTTON = document.querySelector('#clear-history-button');
 const GENERATION_DISPLAY_CARD_ATTR = 'generation-display-card';
 const GENERATION_DISPLAY_PLACEHOLDER = `
 <div generation-display-card>
@@ -84,6 +85,7 @@ const clearGenerationDisplay = () => {
 };
 
 const resetGenerationDisplay = () => {
+    console.log('Resetting simulation display...');
     // Clear the display and add the placeholder element
     clearGenerationDisplay();
     GENERATION_DISPLAY.insertAdjacentHTML('beforeend', GENERATION_DISPLAY_PLACEHOLDER);
@@ -120,9 +122,8 @@ const stopSimulation = () => {
 }
 
 const resetSimulation = () => {
-    console.log('Resetting simulation...');
-    // Clear the generation history, append default message, and reset form
-    resetGenerationDisplay();
+    console.log('Resetting simulation params...');
+    // Reset simulation params form
     resetSimulationParams();
 }
 
@@ -134,6 +135,8 @@ RUN_BUTTON.addEventListener('click', runSimulation);
 STOP_BUTTON.addEventListener('click', stopSimulation);
 
 RESET_BUTTON.addEventListener('click', resetSimulation);
+
+GENERATION_DISPLAY_RESET_BUTTON.addEventListener('click', resetGenerationDisplay);
 
 // LIL' WASM TEST FUNCTION CALL
 console.log(module.hello());
