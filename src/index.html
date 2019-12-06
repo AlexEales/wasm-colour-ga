@@ -22,19 +22,19 @@
                     Target Colour
                 </label>
                 <div class="flex justify-between">
-                    <input id="target-colour-input" class="w-4/5" type="text" value="#81E6D9" minlength="7" maxlength="7" />
+                    <input id="target-colour-input" class="w-4/5" type="text" value="#81E6D9" minlength="7" maxlength="7" required/>
                     <div id="target-colour-display" class="w-12 rounded" style="background-color: #81e6d9;"></div>
                 </div>
 
                 <label for="population-size-input">
                     Population Size
                 </label>
-                <input id="population-size-input" type="number" value="1000" min="100" max="10000" step="100" />
+                <input id="population-size-input" type="number" value="1000" min="100" max="10000" step="100" required/>
 
                 <label for="mutation-rate-input">
                     Mutation Rate
                 </label>
-                <input id="mutation-rate-input" type="number" value="0.2" min="0" max="1" step="0.05" />
+                <input id="mutation-rate-input" type="number" value="0.2" min="0" max="1" step="0.05" required/>
 
                 <div class="flex justify-between">
                     <button id="run-button" class="btn-green">
