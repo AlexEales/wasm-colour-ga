@@ -22,7 +22,7 @@ const RUN_BUTTON = document.querySelector('#run-button');
 const STOP_BUTTON = document.querySelector('#stop-button');
 const RESET_BUTTON = document.querySelector('#reset-button');
 
-const GENERATION_DISPLAY = document.querySelector('#generation-history-display');
+const GENERATION_DISPLAY = document.querySelector('#generation-display');
 const GENERATION_DISPLAY_CARD_ATTR = 'generation-display-card';
 const GENERATION_DISPLAY_PLACEHOLDER = `
 <div generation-display-card>
@@ -33,17 +33,29 @@ const GENERATION_DISPLAY_PLACEHOLDER = `
 </div>
 `;
 
+// GLOBAL VARIABLES
+let running = true;
+let simulation: module.GASimulation;
+let simLoopHandle: number;
+
 // FUNCTIONS
 const updateColourDisplay = () => {
     // Update the colour display when input changes.
-    let colour = FORM_ELEMENTS['TARGET_COLOUR'].input.value;
+    let colour = FORM_ELEMENTS['TARGET_COLOUR']['input'].value;
     if (!colour.startsWith('#')) {
         colour = '#' + colour;
     }
-    FORM_ELEMENTS['TARGET_COLOUR'].display.style.backgroundColor = colour;
+    FORM_ELEMENTS['TARGET_COLOUR']['display'].style.backgroundColor = colour;
 };
 
-const createGenerationDisplayCard = (generation, colour, score) => `
+const resetSimulationParams = () => {
+    // Set form values back to default
+    for (let key in FORM_ELEMENTS) {
+        FORM_ELEMENTS[key].input.value = FORM_ELEMENTS[key].default;
+    }
+};
+
+const createGenerationDisplayCard = (generation: number, colour: string, score: number) => `
 <div ${GENERATION_DISPLAY_CARD_ATTR}>
     <div class="flex">
         <div class="w-12 h-12 rounded mr-4" style="background-color: #${colour}"></div>
@@ -56,6 +68,14 @@ const createGenerationDisplayCard = (generation, colour, score) => `
 </div>
 `;
 
+const addGenerationDisplayCard = (simulationResult: module.SimulationResult) => {
+    let generation = simulationResult.get_generation_number();
+    let colour = simulationResult.get_value();
+    let score = Math.round(simulationResult.get_score() * 100) / 100;
+    let generationDisplayCard = createGenerationDisplayCard(generation, colour, score);
+    GENERATION_DISPLAY.insertAdjacentHTML('beforeend', generationDisplayCard);
+};
+
 const clearGenerationDisplay = () => {
     // Remove all elements with the generation display card attribute and add the placeholder
     GENERATION_DISPLAY.querySelectorAll(`[${GENERATION_DISPLAY_CARD_ATTR}]`).forEach(
@@ -67,39 +87,68 @@ const resetGenerationDisplay = () => {
     // Clear the display and add the placeholder element
     clearGenerationDisplay();
     GENERATION_DISPLAY.insertAdjacentHTML('beforeend', GENERATION_DISPLAY_PLACEHOLDER);
+};
+
+const createSimulation = () => {
+    // Create simulation instance using form input
+    let targetColour: string = FORM_ELEMENTS['TARGET_COLOUR']['input'].value.substring(1);
+    let populationSize: number = FORM_ELEMENTS['POPULATION_SIZE']['input'].value;
+    let mutationRate: number = FORM_ELEMENTS['MUTATION_RATE']['input'].value;
+    simulation = new module.GASimulation(targetColour, populationSize, mutationRate);
+};
+
+const runSimulation = () => {
+    console.log('Starting simulation...');
+    // Create a new simulation, clear display, and start simulation loop
+    createSimulation();
+    clearGenerationDisplay();
+    simLoopHandle = window.setInterval(() => {
+        console.log('Running simulation...');
+        let result = simulation.simulate_generation();
+        addGenerationDisplayCard(result);
+        // If score is 0 then terminate the simulation
+        if (result.get_score() === 0) {
+            stopSimulation();
+        }
+    }, 500)
+};
+
+const stopSimulation = () => {
+    console.log('Stopping simulation...');
+    // Stop the interval running the simulation
+    clearInterval(simLoopHandle);
 }
 
-// EVENT LISTENERS
+const resetSimulation = () => {
+    console.log('Resetting simulation...');
+    // Clear the generation history, append default message, and reset form
+    resetGenerationDisplay();
+    resetSimulationParams();
+}
+
+// ADD EVENT LISTENERS WHEN DOM CONTENT LOADED
 FORM_ELEMENTS['TARGET_COLOUR'].input.addEventListener('change', updateColourDisplay);
 
-RUN_BUTTON.addEventListener('click', () => {
-    console.log('Starting simulation...');
-});
+RUN_BUTTON.addEventListener('click', runSimulation);
 
-STOP_BUTTON.addEventListener('click', () => {
-    console.log('Stopping simulation...');
-});
+STOP_BUTTON.addEventListener('click', stopSimulation);
 
-RESET_BUTTON.addEventListener('click', () => {
-    console.log('Resetting simulation...');
-    for (let key in FORM_ELEMENTS) {
-        FORM_ELEMENTS[key].input.value = FORM_ELEMENTS[key].default;
-    }
-});
+RESET_BUTTON.addEventListener('click', resetSimulation);
 
+// LIL' WASM TEST FUNCTION CALL
 console.log(module.hello());
 
-let simulation = new module.GASimulation('81e6d9', 1000, 0.2);
-console.log(simulation);
+// let simulation = new module.GASimulation('81e6d9', 1000, 0.2);
+// console.log(simulation);
 
-let result = simulation.simulate_generation();
-console.log(result.get_value());
-console.log(result.get_score());
-console.log(simulation.get_population_snapshot(0, 1000));
+// let result = simulation.simulate_generation();
+// console.log(result.get_value());
+// console.log(result.get_score());
+// console.log(simulation.get_population_snapshot(0, 1000));
 
-for (let i = 0; i < 50; i++) {
-    result = simulation.simulate_generation();
-}
-console.log(result.get_value());
-console.log(result.get_score());
-console.log(simulation.get_population_snapshot(49, 1000));
+// for (let i = 0; i < 50; i++) {
+//     result = simulation.simulate_generation();
+// }
+// console.log(result.get_value());
+// console.log(result.get_score());
+// console.log(simulation.get_population_snapshot(49, 1000));
