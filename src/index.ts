@@ -24,6 +24,7 @@ const RESET_BUTTON = document.querySelector('#reset-button');
 
 const GENERATION_DISPLAY = document.querySelector('#generation-display');
 const GENERATION_DISPLAY_RESET_BUTTON = document.querySelector('#clear-history-button');
+const GENERATION_HISTORY_DISPLAY = document.querySelector('#generation-history-display');
 const GENERATION_DISPLAY_CARD_ATTR = 'generation-display-card';
 const GENERATION_DISPLAY_PLACEHOLDER = `
 <div generation-display-card>
@@ -54,6 +55,8 @@ const resetSimulationParams = () => {
     for (let key in FORM_ELEMENTS) {
         FORM_ELEMENTS[key].input.value = FORM_ELEMENTS[key].default;
     }
+    // Update the target colour display
+    updateColourDisplay();
 };
 
 const createGenerationDisplayCard = (generation: number, colour: string, score: number) => `
@@ -70,11 +73,14 @@ const createGenerationDisplayCard = (generation: number, colour: string, score: 
 `;
 
 const addGenerationDisplayCard = (simulationResult: module.SimulationResult) => {
+    // Add generation card to the display
     let generation = simulationResult.get_generation_number();
     let colour = simulationResult.get_value();
     let score = Math.round(simulationResult.get_score() * 100) / 100;
     let generationDisplayCard = createGenerationDisplayCard(generation, colour, score);
-    GENERATION_DISPLAY.insertAdjacentHTML('beforeend', generationDisplayCard);
+    GENERATION_HISTORY_DISPLAY.insertAdjacentHTML('afterbegin', generationDisplayCard);
+    // Fix scroll to the top of the display
+    GENERATION_DISPLAY.scrollTop = 0;
 };
 
 const clearGenerationDisplay = () => {
@@ -140,18 +146,3 @@ GENERATION_DISPLAY_RESET_BUTTON.addEventListener('click', resetGenerationDisplay
 
 // LIL' WASM TEST FUNCTION CALL
 console.log(module.hello());
-
-// let simulation = new module.GASimulation('81e6d9', 1000, 0.2);
-// console.log(simulation);
-
-// let result = simulation.simulate_generation();
-// console.log(result.get_value());
-// console.log(result.get_score());
-// console.log(simulation.get_population_snapshot(0, 1000));
-
-// for (let i = 0; i < 50; i++) {
-//     result = simulation.simulate_generation();
-// }
-// console.log(result.get_value());
-// console.log(result.get_score());
-// console.log(simulation.get_population_snapshot(49, 1000));
