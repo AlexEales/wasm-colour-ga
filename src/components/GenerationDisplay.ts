@@ -1,4 +1,4 @@
-import { BASE_ATTR as CARD_BASE_ATTR } from './GenerationDisplayCard';
+import { GenerationDisplayCard, BASE_ATTR as CARD_BASE_ATTR } from './GenerationDisplayCard';
 
 export const BASE_ATTR = 'generation-display';
 
@@ -26,8 +26,21 @@ const GENERATION_HISTORY_DISPLAY_PLACEHOLDER = `
 </div>
 `;
 
+const GENERATION_DISPLAY_CARD_TEMPLATE = (generation: number, colour: string, score: number) => `
+<div ${CARD_BASE_ATTR}>
+    <div generation-display-card>
+        <div class="w-12 h-12 rounded mr-4" style="background-color: #${colour}"></div>
+        <div>
+            <h3 class="font-bold capitalize">generation ${generation}</h3>
+            <p class="uppercase text-gray-500">#${colour}</p>
+        </div>
+    </div>
+    <p class="font-bold capitalize text-2xl text-gray-900">${score}</p>
+</div>
+`;
+
 /**
- * Custom element for the generation display.
+ * Component for the generation display.
  */
 export class GenerationDisplay {
     _root: HTMLElement;
@@ -44,24 +57,53 @@ export class GenerationDisplay {
         // BIND FUNCTIONS
         this.clear = this.clear.bind(this);
         this.reset = this.reset.bind(this);
-        this.resetEventHandler = this.resetEventHandler.bind(this);
+        this.addCard = this.addCard.bind(this);
+        this.updateHandler = this.updateHandler.bind(this);
         // ADD EVENT LISTENERS
         this._clearBtn.addEventListener('click', this.reset);
-        this._clearBtn.addEventListener(EVENTS.RESET, this.resetEventHandler);
+        window.addEventListener(EVENTS.RESET, this.reset);
+        window.addEventListener(EVENTS.UPDATE, this.updateHandler);
     }
 
+    /**
+     * Attaches an instance of this component to the provided element
+     * 
+     * @param elem Element to attach this component to
+     */
     static attachTo(elem: HTMLElement) {
         return new GenerationDisplay(elem);
     }
 
     /**
-     * Handles any reset events emitted and if meant for this instance resets display
-     * @param e Custom event containing the id of the generation display to reset
+     * Handler for the update event which adds a card to the display if correct information is provided
+     * 
+     * @param e Custom event containing the generation number, top scoring colour, and top score of a generation
      */
-    resetEventHandler(e: CustomEvent) {
-        if (e.detail['id'] === this._root.id) {
-            this.reset();
+    updateHandler(e: CustomEvent) {
+        debugger
+        // If the event doesn't contain the correct information ignore it
+        if (!e.detail['generation'] || !e.detail['colour'] || !e.detail['score']) {
+            return;
         }
+        // Otherwise add a new generation card to the display
+        this.addCard(e.detail['generation'], e.detail['colour'], e.detail['score']);
+    }
+
+    /**
+     * Creates a new generation display card and appends it to the display
+     * 
+     * @param generation The number of the generation this card refers to
+     * @param colour The best scoring colour of this generation
+     * @param score The top score of this generation
+     */
+    addCard(generation: number, colour: string, score: number) {
+        // Create the HTML template and append it
+        const template = GENERATION_DISPLAY_CARD_TEMPLATE(generation, colour, score);
+        this._historyDisplay.insertAdjacentHTML('afterbegin', template);
+        // Attach the card component to the new element
+        document.querySelectorAll(`[${CARD_BASE_ATTR}]`).forEach(GenerationDisplayCard.attachTo);
+        // Set the scroll to top
+        this._historyDisplay.scrollTop = 0;
     }
 
     /**

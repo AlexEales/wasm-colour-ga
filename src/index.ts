@@ -10,7 +10,6 @@ import { GenerationDisplayCard, BASE_ATTR as CARD_BASE_ATTR } from './components
 // TODO: Add in form validation before running simulation
 
 // CONSTANTS
-const FORM_ELEMENT: HTMLFormElement = document.querySelector('#simulation-settings');
 const FORM_ELEMENTS: object = {
     'TARGET_COLOUR': {
         'input': document.querySelector('#target-colour-input') as HTMLFormElement,
@@ -30,10 +29,6 @@ const FORM_ELEMENTS: object = {
 const RUN_BUTTON = document.querySelector('#run-button');
 const STOP_BUTTON = document.querySelector('#stop-button');
 const RESET_BUTTON = document.querySelector('#reset-button');
-
-const GENERATION_DISPLAY = document.querySelector('#generation-container');
-const GENERATION_HISTORY_DISPLAY = document.querySelector('generation-display');
-const GENERATION_DISPLAY_CARD_ATTR = 'generation-display-card';
 
 // GLOBAL VARIABLES
 let simulation: module.GASimulation;
@@ -58,35 +53,17 @@ const resetSimulationParams = () => {
     updateColourDisplay();
 };
 
-const createGenerationDisplayCard = (generation: number, colour: string, score: number) => `
-<div ${GENERATION_DISPLAY_CARD_ATTR}>
-    <div generation-display-card>
-        <div class="w-12 h-12 rounded mr-4" style="background-color: #${colour}"></div>
-        <div>
-            <h3 class="font-bold capitalize">generation ${generation}</h3>
-            <p class="uppercase text-gray-500">#${colour}</p>
-        </div>
-    </div>
-    <p class="font-bold capitalize text-2xl text-gray-900">${score}</p>
-</div>
-`;
-
-const addGenerationDisplayCard = (simulationResult: module.SimulationResult) => {
+const updateGenerationDisplay = (simulationResult: module.SimulationResult) => {
     // Add generation card to the display
     let generation = simulationResult.get_generation_number();
     let colour = simulationResult.get_value();
     let score = Math.round(simulationResult.get_score() * 100) / 100;
-    let generationDisplayCard = createGenerationDisplayCard(generation, colour, score);
-    GENERATION_HISTORY_DISPLAY.insertAdjacentHTML('afterbegin', generationDisplayCard);
-    // Fix scroll to the top of the display
-    GENERATION_DISPLAY.scrollTop = 0;
-};
-
-const clearGenerationDisplay = () => {
-    // Remove all elements with the generation display card attribute and add the placeholder
-    GENERATION_DISPLAY.querySelectorAll(`[${GENERATION_DISPLAY_CARD_ATTR}]`).forEach(
-        elem => elem.parentNode.removeChild(elem)
-    );
+    // Dispatch an update event to the display to create a new card
+    window.dispatchEvent(new CustomEvent(DISPLAY_EVENTS.UPDATE, { detail: {
+        'generation': generation,
+        'colour': colour,
+        'score': score
+    }}));
 };
 
 const createSimulation = () => {
@@ -99,13 +76,14 @@ const createSimulation = () => {
 
 const runSimulation = () => {
     console.log('Starting simulation...');
+    // Clear the simulation display
+    window.dispatchEvent(new CustomEvent(DISPLAY_EVENTS.RESET));
     // Create a new simulation, clear display, and start simulation loop
     createSimulation();
-    clearGenerationDisplay();
     simLoopHandle = window.setInterval(() => {
         console.log('Running simulation...');
         let result = simulation.simulate_generation();
-        addGenerationDisplayCard(result);
+        updateGenerationDisplay(result);
         // If score is 0 then terminate the simulation
         if (result.get_score() === 0) {
             stopSimulation();

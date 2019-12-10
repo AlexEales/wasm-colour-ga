@@ -105,5 +105,5 @@ section {
 }
 
 [generation-display-card] {
-    @apply flex justify-between items-center w-full my-2 p-4 bg-white rounded-lg overflow-hidden border border-gray-300;
+    @apply inline-flex justify-between items-center w-full my-2 p-4 bg-white rounded-lg overflow-hidden border border-gray-300;
 }
