@@ -1,5 +1,10 @@
 import module from '../colour_ga/Cargo.toml';
 
+import { GenerationDisplay, BASE_ATTR as DISPLAY_BASE_ATTR } from './components/GenerationDisplay';
+import { GenerationDisplayCard, BASE_ATTR as CARD_BASE_ATTR } from './components/GenerationDisplayCard';
+
+// TODO: Add in form validation before running simulation
+
 // CONSTANTS
 const FORM_ELEMENT: HTMLFormElement = document.querySelector('#simulation-settings');
 const FORM_ELEMENTS: object = {
@@ -22,9 +27,9 @@ const RUN_BUTTON = document.querySelector('#run-button');
 const STOP_BUTTON = document.querySelector('#stop-button');
 const RESET_BUTTON = document.querySelector('#reset-button');
 
-const GENERATION_DISPLAY = document.querySelector('#generation-display');
-const GENERATION_DISPLAY_RESET_BUTTON = document.querySelector('#clear-history-button');
-const GENERATION_HISTORY_DISPLAY = document.querySelector('#generation-history-display');
+const GENERATION_DISPLAY = document.querySelector('#generation-container');
+const GENERATION_DISPLAY_RESET_BUTTON = document.querySelector('[generation-display-clear-btn]');
+const GENERATION_HISTORY_DISPLAY = document.querySelector('generation-display');
 const GENERATION_DISPLAY_CARD_ATTR = 'generation-display-card';
 const GENERATION_DISPLAY_PLACEHOLDER = `
 <div generation-display-card>
@@ -61,7 +66,7 @@ const resetSimulationParams = () => {
 
 const createGenerationDisplayCard = (generation: number, colour: string, score: number) => `
 <div ${GENERATION_DISPLAY_CARD_ATTR}>
-    <div class="flex">
+    <div generation-display-card>
         <div class="w-12 h-12 rounded mr-4" style="background-color: #${colour}"></div>
         <div>
             <h3 class="font-bold capitalize">generation ${generation}</h3>
@@ -143,6 +148,10 @@ STOP_BUTTON.addEventListener('click', stopSimulation);
 RESET_BUTTON.addEventListener('click', resetSimulation);
 
 GENERATION_DISPLAY_RESET_BUTTON.addEventListener('click', resetGenerationDisplay);
+
+// ATTACH COMPONENTS
+document.querySelectorAll(`[${DISPLAY_BASE_ATTR}]`).forEach(GenerationDisplay.attachTo);
+document.querySelectorAll(`[${CARD_BASE_ATTR}]`).forEach(GenerationDisplayCard.attachTo);
 
 // LIL' WASM TEST FUNCTION CALL
 console.log(module.hello());

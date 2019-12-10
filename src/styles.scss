@@ -53,19 +53,12 @@ section {
     }
 }
 
+
 #simulation-settings {
     @apply w-5/6 m-4 p-4 bg-white rounded-lg overflow-hidden shadow-lg h-auto;
 
     @media (min-width: 768px) {
         @apply w-1/4;
-    }
-}
-
-#generation-container {
-    @apply w-5/6 max-h-3/4 overflow-y-scroll m-4 p-4 bg-white rounded-lg shadow-lg;
-
-    @media (min-width: 768px) {
-        @apply w-2/4 max-h-3/4;
     }
 }
 
@@ -103,6 +96,14 @@ section {
     }
 }
 
+[generation-display] {
+    @apply w-5/6 max-h-3/4 overflow-y-scroll m-4 p-4 bg-white rounded-lg shadow-lg;
+
+    @media (min-width: 768px) {
+        @apply w-2/4 max-h-3/4;
+    }
+}
+
 [generation-display-card] {
-    @apply inline-flex justify-between items-center w-full my-2 p-4 bg-white rounded-lg overflow-hidden border border-gray-300;
+    @apply flex justify-between items-center w-full my-2 p-4 bg-white rounded-lg overflow-hidden border border-gray-300;
 }
