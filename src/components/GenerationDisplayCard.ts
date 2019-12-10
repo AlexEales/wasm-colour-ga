@@ -1,6 +1,4 @@
-import { BASE_ATTR as DISPLAY_BASE_ATTR } from './GenerationDisplay';
-
-export const BASE_ATTR = `${DISPLAY_BASE_ATTR}-card`;
+export const BASE_ATTR = `generation-display-card`;
 
 /**
  * Custom element for a generation display card.

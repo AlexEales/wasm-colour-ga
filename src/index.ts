@@ -1,6 +1,10 @@
 import module from '../colour_ga/Cargo.toml';
 
-import { GenerationDisplay, BASE_ATTR as DISPLAY_BASE_ATTR } from './components/GenerationDisplay';
+import {
+    GenerationDisplay,
+    BASE_ATTR as DISPLAY_BASE_ATTR,
+    EVENTS as DISPLAY_EVENTS
+} from './components/GenerationDisplay';
 import { GenerationDisplayCard, BASE_ATTR as CARD_BASE_ATTR } from './components/GenerationDisplayCard';
 
 // TODO: Add in form validation before running simulation
@@ -28,20 +32,10 @@ const STOP_BUTTON = document.querySelector('#stop-button');
 const RESET_BUTTON = document.querySelector('#reset-button');
 
 const GENERATION_DISPLAY = document.querySelector('#generation-container');
-const GENERATION_DISPLAY_RESET_BUTTON = document.querySelector('[generation-display-clear-btn]');
 const GENERATION_HISTORY_DISPLAY = document.querySelector('generation-display');
 const GENERATION_DISPLAY_CARD_ATTR = 'generation-display-card';
-const GENERATION_DISPLAY_PLACEHOLDER = `
-<div generation-display-card>
-    <div>
-        <h3>No results</h3>
-        <p>Input your parameters and press start to begin!</p>
-    </div>
-</div>
-`;
 
 // GLOBAL VARIABLES
-let running = true;
 let simulation: module.GASimulation;
 let simLoopHandle: number;
 
@@ -95,13 +89,6 @@ const clearGenerationDisplay = () => {
     );
 };
 
-const resetGenerationDisplay = () => {
-    console.log('Resetting simulation display...');
-    // Clear the display and add the placeholder element
-    clearGenerationDisplay();
-    GENERATION_DISPLAY.insertAdjacentHTML('beforeend', GENERATION_DISPLAY_PLACEHOLDER);
-};
-
 const createSimulation = () => {
     // Create simulation instance using form input
     let targetColour: string = FORM_ELEMENTS['TARGET_COLOUR']['input'].value.substring(1);
@@ -146,8 +133,6 @@ RUN_BUTTON.addEventListener('click', runSimulation);
 STOP_BUTTON.addEventListener('click', stopSimulation);
 
 RESET_BUTTON.addEventListener('click', resetSimulation);
-
-GENERATION_DISPLAY_RESET_BUTTON.addEventListener('click', resetGenerationDisplay);
 
 // ATTACH COMPONENTS
 document.querySelectorAll(`[${DISPLAY_BASE_ATTR}]`).forEach(GenerationDisplay.attachTo);
