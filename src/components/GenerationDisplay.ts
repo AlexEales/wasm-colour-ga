@@ -11,6 +11,7 @@ export const ATTRS = {
 export const EVENTS = {
     'UPDATE': `update-${BASE_ATTR}`,
     'RESET': `reset-${BASE_ATTR}`,
+    'CLEAR': `clear-${BASE_ATTR}`
 };
 
 export const STYLES = {
@@ -28,7 +29,7 @@ const GENERATION_HISTORY_DISPLAY_PLACEHOLDER = `
 
 const GENERATION_DISPLAY_CARD_TEMPLATE = (generation: number, colour: string, score: number) => `
 <div ${CARD_BASE_ATTR}>
-    <div generation-display-card>
+    <div class="flex">
         <div class="w-12 h-12 rounded mr-4" style="background-color: #${colour}"></div>
         <div>
             <h3 class="font-bold capitalize">generation ${generation}</h3>
@@ -62,12 +63,13 @@ export class GenerationDisplay {
         // ADD EVENT LISTENERS
         this._clearBtn.addEventListener('click', this.reset);
         window.addEventListener(EVENTS.RESET, this.reset);
+        window.addEventListener(EVENTS.CLEAR, this.clear);
         window.addEventListener(EVENTS.UPDATE, this.updateHandler);
     }
 
     /**
      * Attaches an instance of this component to the provided element
-     * 
+     *
      * @param elem Element to attach this component to
      */
     static attachTo(elem: HTMLElement) {
@@ -76,13 +78,12 @@ export class GenerationDisplay {
 
     /**
      * Handler for the update event which adds a card to the display if correct information is provided
-     * 
+     *
      * @param e Custom event containing the generation number, top scoring colour, and top score of a generation
      */
     updateHandler(e: CustomEvent) {
-        debugger
         // If the event doesn't contain the correct information ignore it
-        if (!e.detail['generation'] || !e.detail['colour'] || !e.detail['score']) {
+        if (e.detail['generation'] === undefined || !e.detail['colour'] || e.detail['score'] === undefined) {
             return;
         }
         // Otherwise add a new generation card to the display
@@ -91,7 +92,7 @@ export class GenerationDisplay {
 
     /**
      * Creates a new generation display card and appends it to the display
-     * 
+     *
      * @param generation The number of the generation this card refers to
      * @param colour The best scoring colour of this generation
      * @param score The top score of this generation

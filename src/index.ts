@@ -77,17 +77,17 @@ const createSimulation = () => {
 const runSimulation = () => {
     console.log('Starting simulation...');
     // Clear the simulation display
-    window.dispatchEvent(new CustomEvent(DISPLAY_EVENTS.RESET));
+    window.dispatchEvent(new CustomEvent(DISPLAY_EVENTS.CLEAR));
     // Create a new simulation, clear display, and start simulation loop
     createSimulation();
     simLoopHandle = window.setInterval(() => {
         console.log('Running simulation...');
         let result = simulation.simulate_generation();
-        updateGenerationDisplay(result);
         // If score is 0 then terminate the simulation
         if (result.get_score() === 0) {
             stopSimulation();
         }
+        updateGenerationDisplay(result);
     }, 500)
 };
 
