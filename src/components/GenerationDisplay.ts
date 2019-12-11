@@ -70,8 +70,10 @@ export class GenerationDisplay {
      * Attaches an instance of this component to the provided element
      *
      * @param elem Element to attach this component to
+     *
+     * @returns The created generation display instance
      */
-    static attachTo(elem: HTMLElement) {
+    static attachTo(elem: HTMLElement): GenerationDisplay {
         return new GenerationDisplay(elem);
     }
 

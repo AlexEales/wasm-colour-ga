@@ -6,6 +6,11 @@ import {
     CARD_BASE_ATTR,
     EVENTS as DISPLAY_EVENTS
 } from './components/GenerationDisplay';
+import {
+    Notification,
+    BASE_ATTR as NOTIFICATION_BASE_ATTR,
+    EVENTS as NOTIFICATION_EVENTS
+} from './components/Notification';
 
 // TODO: Add in form validation before running simulation
 
@@ -83,12 +88,15 @@ const runSimulation = () => {
     simLoopHandle = window.setInterval(() => {
         console.log('Running simulation...');
         let result = simulation.simulate_generation();
-        // If score is 0 then terminate the simulation
+        // If score is 0 then terminate the simulation and display notification
         if (result.get_score() === 0) {
             stopSimulation();
+            window.dispatchEvent(new CustomEvent(NOTIFICATION_EVENTS.TRIGGER, { detail: {
+                'notification': 'simulation-complete'
+            }}));
         }
         updateGenerationDisplay(result);
-    }, 500)
+    }, 1000)
 };
 
 const stopSimulation = () => {
@@ -114,6 +122,7 @@ RESET_BUTTON.addEventListener('click', resetSimulation);
 
 // ATTACH COMPONENTS
 document.querySelectorAll(`[${DISPLAY_BASE_ATTR}]`).forEach(GenerationDisplay.attachTo);
+document.querySelectorAll(`[${NOTIFICATION_BASE_ATTR}]`).forEach(Notification.attachTo);
 
 // LIL' WASM TEST FUNCTION CALL
 console.log(module.hello());
