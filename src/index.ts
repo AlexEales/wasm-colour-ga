@@ -3,9 +3,9 @@ import module from '../colour_ga/Cargo.toml';
 import {
     GenerationDisplay,
     BASE_ATTR as DISPLAY_BASE_ATTR,
+    CARD_BASE_ATTR,
     EVENTS as DISPLAY_EVENTS
 } from './components/GenerationDisplay';
-import { GenerationDisplayCard, BASE_ATTR as CARD_BASE_ATTR } from './components/GenerationDisplayCard';
 
 // TODO: Add in form validation before running simulation
 
@@ -114,7 +114,6 @@ RESET_BUTTON.addEventListener('click', resetSimulation);
 
 // ATTACH COMPONENTS
 document.querySelectorAll(`[${DISPLAY_BASE_ATTR}]`).forEach(GenerationDisplay.attachTo);
-document.querySelectorAll(`[${CARD_BASE_ATTR}]`).forEach(GenerationDisplayCard.attachTo);
 
 // LIL' WASM TEST FUNCTION CALL
 console.log(module.hello());

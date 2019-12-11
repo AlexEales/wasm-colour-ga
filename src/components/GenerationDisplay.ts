@@ -1,6 +1,5 @@
-import { GenerationDisplayCard, BASE_ATTR as CARD_BASE_ATTR } from './GenerationDisplayCard';
-
 export const BASE_ATTR = 'generation-display';
+export const CARD_BASE_ATTR = `${BASE_ATTR}-card`;
 
 export const ATTRS = {
     'HEADER': `${BASE_ATTR}-header`,
@@ -101,8 +100,6 @@ export class GenerationDisplay {
         // Create the HTML template and append it
         const template = GENERATION_DISPLAY_CARD_TEMPLATE(generation, colour, score);
         this._historyDisplay.insertAdjacentHTML('afterbegin', template);
-        // Attach the card component to the new element
-        document.querySelectorAll(`[${CARD_BASE_ATTR}]`).forEach(GenerationDisplayCard.attachTo);
         // Set the scroll to top
         this._historyDisplay.scrollTop = 0;
     }
