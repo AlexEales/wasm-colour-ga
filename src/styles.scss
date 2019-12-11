@@ -113,6 +113,7 @@ section {
 
     display: none;
     left: 50%;
+    opacity: 0;
     transform: translateX(-50%);
 
     @media (min-width: 768px) {
@@ -122,4 +123,5 @@ section {
 
 [notification-active] {
     display: block;
+    opacity: 1;
 }

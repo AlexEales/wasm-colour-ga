@@ -88,11 +88,16 @@ const runSimulation = () => {
     simLoopHandle = window.setInterval(() => {
         console.log('Running simulation...');
         let result = simulation.simulate_generation();
-        // If score is 0 then terminate the simulation and display notification
+        // If score is 0 then terminate the simulation and display notification or if gen number is > 100 display not converging
         if (result.get_score() === 0) {
             stopSimulation();
             window.dispatchEvent(new CustomEvent(NOTIFICATION_EVENTS.TRIGGER, { detail: {
                 'notification': 'simulation-complete'
+            }}));
+        } else if (result.get_generation_number() >= 100) {
+            stopSimulation();
+            window.dispatchEvent(new CustomEvent(NOTIFICATION_EVENTS.TRIGGER, { detail: {
+                'notification': 'failed-to-converge'
             }}));
         }
         updateGenerationDisplay(result);
